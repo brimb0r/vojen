@@ -121,9 +121,11 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cgagno_005Cdev_005Cdotnet_005Cvojen_005Clibs_005CUnityEngine_002EWindModule_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cgagno_005Cdev_005Cdotnet_005Cvojen_005Clibs_005CUnityEngine_002EXR_002ELegacyInputHelpers_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cgagno_005Cdev_005Cdotnet_005Cvojen_005Clibs_005CUnityEngine_002EXRModule_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cgagno_005Cdev_005Cdotnet_005Cvojen_005Cpackages_005CLitJson_002E0_002E17_002E0_005Clib_005Cnet45_005CLitJSON_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AHarmonyPatch_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E3_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F474744d65d8e460fa08cd5fd82b5d65f32000_003F54_003Fa9959b23_003FHarmonyPatch_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003APlayer_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E3_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003Fd22e5e8de7fd45e3a0f0d74171a7826a202800_003Faa_003F4b4e430e_003FPlayer_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Users\gagno\dev\dotnet\vojen\bin\Debug\assembly_valheim.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\gagno\dev\dotnet\vojen\libs\assembly_valheim.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\gagno\dev\dotnet\vojen\packages\LitJson.0.17.0\lib\net45\LitJSON.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>
