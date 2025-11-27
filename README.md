@@ -9,16 +9,38 @@
 
 # Required DLLs
 
-## TODO : Update this list with exact versions and sources of the DLLs, and any additional dependencies.
+To build and run this project, ensure the following DLLs are included and referenced:
 
-To build and run this project, ensure the following DLLs are included and reference:
-
-- `0Harmony.dll`
+## From BepInEx and Harmony
+- `0Harmony20.dll`
 - `BepInEx.dll`
-- `valheim_Data\Managed\assembly_valheim.dll`
-- `UnityEngine.dll`
-- `UnityEngine.CoreModule.dll`
 
+## From Valheim Game Files
+- `assembly_googleanalytics.dll`
+- `assembly_guiutils.dll`
+- `assembly_steamworks.dll`
+- `assembly_utils.dll`
+- `assembly_valheim.dll`
+- `Microsoft.CSharp.dll`
+- `UnityEngine.dll`
+- `UnityEngine.AnimationModule.dll`
+- `UnityEngine.AssetBundleModule.dll`
+- `UnityEngine.AudioModule.dll`
+- `UnityEngine.CoreModule.dll`
+- `UnityEngine.IMGUIModule.dll`
+- `UnityEngine.InputLegacyModule.dll`
+- `UnityEngine.InputModule.dll`
+- `UnityEngine.JSONSerializeModule.dll`
+- `UnityEngine.PhysicsModule.dll`
+- `UnityEngine.ScreenCaptureModule.dll`
+- `UnityEngine.TextRenderingModule.dll`
+- `UnityEngine.UI.dll`
+- `UnityEngine.UIModule.dll`
+- `UnityEngine.UnityWebRequestAudioModule.dll`
+- `UnityEngine.UnityWebRequestModule.dll`
+- `UnityEngine.UnityWebRequestWWWModule.dll`
+
+Ensure these DLLs are placed in the appropriate paths as referenced in the project file.
 
 # DevMachine Setup
 1. Install `Rider` or `Visual Studio` on your development machine.
@@ -32,5 +54,9 @@ To build and run this project, ensure the following DLLs are included and refere
 5. Place the generated DLL in the appropriate BepInEx plugins folder for Valheim.
 6. Launch Valheim to test the mod.
 7. Debug and iterate as necessary.
+
+
+
+
 
 
