@@ -1,0 +1,9 @@
+{
+  "name": "vojen",
+  "version_number": "0.0.1",
+  "website_url": "https://github.com/brimb0r/vojen",
+  "description": "edited some things",
+  "dependencies": [
+    "Azumatt-AzuExtendedPlayerInventory-1.4.12"
+  ]
+}
