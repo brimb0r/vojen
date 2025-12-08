@@ -15,6 +15,12 @@
         <FileAlignment>512</FileAlignment>
         <LangVersion>10</LangVersion>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <DebugType>portable</DebugType>
+        <Optimize>false</Optimize>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <OutputPath>bin\Debug\</OutputPath>
+    </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
         <DebugSymbols>true</DebugSymbols>
@@ -68,8 +74,16 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Accessors\Configs.cs" />
+        <Compile Include="Accessors\ItemManagers.cs" />
+        <Compile Include="Accessors\MaterialReplacer.cs" />
+        <Compile Include="Accessors\Sprite.cs" />
+        <Compile Include="Engine\SpellStone.cs" />
         <Compile Include="Plugin.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="src\Spellstone.cs" />
+        <Compile Include="Util\Dir.cs" />
+        <Compile Include="Util\Keys.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -91,14 +105,14 @@
         <Reference Include="gui_framework">
             <HintPath>$(CorlibPath)\publicized_assemblies\gui_framework_publicized.dll</HintPath>
         </Reference>
-        <Reference Include="ServerSync">
-            <HintPath>Libs\ServerSync.dll</HintPath>
-        </Reference>
         <Reference Include="AzuExtendedPlayerInventory">
             <HintPath>Libs\AzuExtendedPlayerInventory.dll</HintPath>
         </Reference>
         <Reference Include="Bepinx-Publicizer">
             <HintPath>Libs\Bepinex-Publicizer.dll</HintPath>
+        </Reference>
+        <Reference Include="ServerSync">
+            <HintPath>Libs\ServerSync.dll</HintPath>
         </Reference>
         <Reference Include="dnlib">
             <HintPath>Libs\dnlib.dll</HintPath>
@@ -154,12 +168,12 @@
       <Content Include="Libs\ServerSync.dll" />
       <Content Include="Libs\UnityEngine.ImageConversionModule.dll" />
       <Content Include="Libs\YamlDotNet.dll" />
-      <Content Include="translations\English.yml" />
-      <Content Include="translations\Korean.yml" />
-      <Content Include="translations\Portuguese_Brazilian.yml" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Icons\" />
+      <Folder Include="assets\" />
+      <Folder Include="Icons\core\" />
+        <EmbeddedResource Include="Icons\core\spellstone.png" />
+        <Folder Include="Model\" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <ItemGroup>
