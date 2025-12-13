@@ -3,7 +3,6 @@ using System.IO;
 using BepInEx;
 using BepInEx.Configuration;
 using JetBrains.Annotations;
-using ServerSync;
 
 namespace Plugin.Accessors;
 
@@ -52,9 +51,7 @@ public class Configs
                 (synchronizedSetting ? " [Synced with Server]" : " [Not Synced with Server]"),
                 description.AcceptableValues, description.Tags);
         ConfigEntry<T> configEntry = VojenPlugin.Instance.Config.Bind(group, name, value, extendedDescription);
-
-        SyncedConfigEntry<T> syncedConfigEntry = VojenPlugin.ConfigSync.AddConfigEntry(configEntry);
-        syncedConfigEntry.SynchronizedConfig = synchronizedSetting;
+        
 
         return configEntry;
     }

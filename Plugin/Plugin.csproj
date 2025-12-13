@@ -75,10 +75,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Accessors\Configs.cs" />
-        <Compile Include="Accessors\ItemManagers.cs" />
-        <Compile Include="Accessors\MaterialReplacer.cs" />
         <Compile Include="Accessors\Sprite.cs" />
-        <Compile Include="Engine\SpellStone.cs" />
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="src\Spellstone.cs" />
@@ -108,14 +105,8 @@
         <Reference Include="AzuExtendedPlayerInventory">
             <HintPath>Libs\AzuExtendedPlayerInventory.dll</HintPath>
         </Reference>
-        <Reference Include="Bepinx-Publicizer">
-            <HintPath>Libs\Bepinex-Publicizer.dll</HintPath>
-        </Reference>
-        <Reference Include="ServerSync">
-            <HintPath>Libs\ServerSync.dll</HintPath>
-        </Reference>
-        <Reference Include="dnlib">
-            <HintPath>Libs\dnlib.dll</HintPath>
+        <Reference Include="Jotunn">
+            <HintPath>Libs\Jotunn.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine">
             <HintPath>$(CorlibPath)\UnityEngine.dll</HintPath>
@@ -165,6 +156,7 @@
       <Content Include="Libs\Bepinex-Publicizer.dll" />
       <Content Include="Libs\dnlib.dll" />
       <Content Include="Libs\ItemManager.dll" />
+      <Content Include="Libs\Jotunn.dll" />
       <Content Include="Libs\ServerSync.dll" />
       <Content Include="Libs\UnityEngine.ImageConversionModule.dll" />
       <Content Include="Libs\YamlDotNet.dll" />
