@@ -64,21 +64,6 @@ public class SpellStoneSetup
 
     public SpellStoneSetup(Jotunn.Entities.CustomItem item, int width, int height)
     {
-        string sharedName = "SpellStone";
-        englishName = "SpellStone";
-        sizes[1] = new Size(width, height);
-        statusEffect = ScriptableObject.CreateInstance<SE_SpellStone>();
-        statusEffect.name = $"SE_SpellStone_{item.ItemDrop.name}";
-        statusEffect.m_name = sharedName;
-        ItemDrop? drop = item.ItemDrop.GetComponent<ItemDrop>();
-        ItemDrop.ItemData? data = drop.m_itemData;
-        statusEffect.m_icon = SpriteAccessor.SpellStone;
-        statusEffect.m_speedModifier = 1.05f;
-        drop.m_itemData = new SpellStone(data);
-        drop.m_itemData.m_dropPrefab = item.ItemPrefab;
-        drop.m_itemData.m_shared.m_equipStatusEffect = statusEffect;
-        Configs.config(englishName, "Restrictions", Restriction.None, "Set restrictions");
-        spellstone[sharedName] = this;
         VojenPlugin.VojenLogger.LogInfo("SpellStone Setup complete.");
     }
 

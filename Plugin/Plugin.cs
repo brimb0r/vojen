@@ -15,6 +15,8 @@ using Jotunn.Entities;
 using Jotunn.Managers;
 using Plugin.Accessors;
 using Plugin.Util;
+using AlmanacClasses;
+using System.Collections.Generic;
 
 namespace Plugin
 {
@@ -94,7 +96,7 @@ namespace Plugin
             try
             {
                 // Check if the base prefab exists
-                GameObject basePrefab = ObjectDB.instance.GetItemPrefab("Torch");
+                GameObject basePrefab = ObjectDB.instance.GetItemPrefab("Wishbone");
                 if (basePrefab == null)
                 {
                     VojenLogger.LogError("Base prefab 'Torch' not found in ObjectDB.");
@@ -120,11 +122,25 @@ namespace Plugin
                 };
                 spellStone.AddRequirement(new RequirementConfig("Stone", 1));
 
-                CustomItem customItem = new CustomItem("SpellStone", "Flint", spellStone);
+                CustomItem customItem = new CustomItem("SpellStone", "Wishbone", spellStone);
                 ItemManager.Instance.AddItem(customItem);
+                
+                SE_Stats spellStoneEffect = ScriptableObject.CreateInstance<SE_Stats>();
+                spellStoneEffect.name = "SE_SpellStoneBuff";
+                spellStoneEffect.m_name = "SpellStone Buff";
+                spellStoneEffect.m_tooltip = "You feel empowered by the SpellStone!";
+                spellStoneEffect.m_speedModifier = 0.1f;
+                spellStoneEffect.m_healthRegenMultiplier = 0.5f; 
+                spellStoneEffect.m_staminaRegenMultiplier = 0.5f;
+                spellStoneEffect.m_addMaxCarryWeight = 220.0f;
+                spellStoneEffect.m_healthUpFront = 80.0f;
+                spellStoneEffect.m_staminaUpFront = 100.0f;
+                spellStoneEffect.m_damageModifier = 1.5f;
+                spellStoneEffect.m_jumpModifier = new Vector3(0.01f, 0.01f, 0.01f);
 
-                // Add custom status effect
-                customItem.ItemDrop.m_itemData.m_shared.m_equipStatusEffect = SpellStoneEffect?.StatusEffect;
+                CustomStatusEffect statusEffect = new CustomStatusEffect(spellStoneEffect, true);
+                customItem.ItemDrop.m_itemData.m_shared.m_equipStatusEffect = statusEffect.StatusEffect;
+                
                 new SpellStone(customItem.ItemDrop.m_itemData);
                 new SpellStoneSetup(customItem,5, 0);
 
