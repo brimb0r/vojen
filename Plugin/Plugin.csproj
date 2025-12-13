@@ -76,6 +76,10 @@
     <ItemGroup>
         <Compile Include="Accessors\Configs.cs" />
         <Compile Include="Accessors\Sprite.cs" />
+        <Compile Include="ConsoleCommands\BetterSpawnCommand.cs" />
+        <Compile Include="ConsoleCommands\ListPlayersCommand.cs" />
+        <Compile Include="ConsoleCommands\PrintItemsCommand.cs" />
+        <Compile Include="ConsoleCommands\TpCommand.cs" />
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="src\Spellstone.cs" />
@@ -150,6 +154,9 @@
       <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
+      <Content Include="assets\jotunnlibtest" />
+      <Content Include="assets\recipes.json" />
+      <Content Include="assets\Translations\English\backpack.english.json" />
       <Content Include="environment.props" />
       <Content Include="ILRepack.targets" />
       <Content Include="Libs\AzuExtendedPlayerInventory.dll" />
@@ -162,7 +169,6 @@
       <Content Include="Libs\YamlDotNet.dll" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="assets\" />
       <Folder Include="Icons\core\" />
         <EmbeddedResource Include="Icons\core\spellstone.png" />
         <Folder Include="Model\" />

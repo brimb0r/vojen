@@ -1,8 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 using BepInEx.Configuration;
 using HarmonyLib;
 using JetBrains.Annotations;
+using Jotunn.Managers;
+using UnityEngine;
+using Plugin.Accessors;
 
 namespace Plugin;
 
@@ -34,7 +41,7 @@ public static class SpellStoneExtensions
 
     public static bool HasSpellStone(this Humanoid humanoid)
     {
-        return humanoid.GetSpellStone() != null;
+        return true;
     }
 }
 
@@ -50,9 +57,98 @@ public class SpellStoneSetup
     }
     
     public static readonly Dictionary<string, SpellStoneSetup> spellstone = new();
+    public readonly Dictionary<int, Size> sizes = new();
     public readonly SE_SpellStone statusEffect;
     public readonly string englishName;
     public readonly ConfigEntry<Restriction> restrictConfig;
+
+    public SpellStoneSetup(Jotunn.Entities.CustomItem item, int width, int height)
+    {
+        string sharedName = "SpellStone";
+        englishName = "SpellStone";
+        sizes[1] = new Size(width, height);
+        statusEffect = ScriptableObject.CreateInstance<SE_SpellStone>();
+        statusEffect.name = $"SE_SpellStone_{item.ItemDrop.name}";
+        statusEffect.m_name = sharedName;
+        ItemDrop? drop = item.ItemDrop.GetComponent<ItemDrop>();
+        ItemDrop.ItemData? data = drop.m_itemData;
+        statusEffect.m_icon = SpriteAccessor.SpellStone;
+        statusEffect.m_speedModifier = 1.05f;
+        drop.m_itemData = new SpellStone(data);
+        drop.m_itemData.m_dropPrefab = item.ItemPrefab;
+        drop.m_itemData.m_shared.m_equipStatusEffect = statusEffect;
+        Configs.config(englishName, "Restrictions", Restriction.None, "Set restrictions");
+        spellstone[sharedName] = this;
+        VojenPlugin.VojenLogger.LogInfo("SpellStone Setup complete.");
+    }
+
+    public void AddSizePerQuality(int width, int height, int quality)
+    {
+        sizes[quality] = new Size(width, height);
+    }
+
+    public void SetupConfigs()
+    {
+        foreach (KeyValuePair<int, Size> size in sizes)
+        {
+            ConfigEntry<string> config = Configs.config(englishName, $"Inventory Size Qlty.{size.Key}",
+                string.Join("x", size.Value.width, size.Value.height), new ConfigDescription(
+                    $"Setup inventory size for quality {size.Key}, width x height", null, new Configs.ConfigurationManagerAttributes()
+                    {
+                        CustomDrawer = Size.Draw
+                    }));
+            config.SettingChanged += (_, _) => OnConfigChange();
+            OnConfigChange();
+            
+            void OnConfigChange()
+            {
+                string[] values = config.Value.Split('x');
+                if (values.Length != 2) return;
+                if (!int.TryParse(values[0], out int width) || !int.TryParse(values[1], out int height)) return;
+                sizes[size.Key].width = width;
+                sizes[size.Key].height = height;
+            }
+        }
+    }
+
+    public class Size
+    {
+        public int width;
+        public int height;
+
+        public Size(int width, int height)
+        {
+            this.width = width;
+            this.height = height;
+        }
+
+        public static void Draw(ConfigEntryBase cfg)
+        {
+            bool locked = cfg.Description.Tags
+                .Select(a =>
+                    a.GetType().Name == "ConfigurationManagerAttributes"
+                        ? (bool?)a.GetType().GetField("ReadOnly")?.GetValue(a)
+                        : null).FirstOrDefault(v => v != null) ?? false;
+            
+            var values = ((string)cfg.BoxedValue).Split('x');
+            if (values.Length != 2) return;
+            
+            string widthCfg = values[0].Trim();
+            string heightCfg = values[1].Trim();
+            
+            GUILayout.BeginVertical();
+            GUILayout.BeginHorizontal();
+            string width = GUILayout.TextField(widthCfg, new GUIStyle(GUI.skin.textField));
+            string height = GUILayout.TextField(heightCfg, new GUIStyle(GUI.skin.textField));
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+            
+            if (!locked && (width != widthCfg || height != heightCfg))
+            {
+                cfg.BoxedValue = string.Join("x", width, height);
+            }
+        }
+    }
     
     [HarmonyPatch(typeof(ItemDrop), nameof(ItemDrop.Awake))]
     private static class ItemDrop_Awake_Patch 

@@ -7,8 +7,12 @@ using HarmonyLib;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System;
+using System.Linq;
 using Jotunn;
 using System.Threading.Tasks;
+using Jotunn.Configs;
+using Jotunn.Entities;
+using Jotunn.Managers;
 using Plugin.Accessors;
 using Plugin.Util;
 
@@ -50,49 +54,12 @@ namespace Plugin
                 DontDestroyOnLoad(root);
                 root.SetActive(false);
                 await WaitForObjectDB();
+                AddConsoleCommands();
 
                 VojenLogger.LogInfo("Lets Add the SpellStone.");
-                var spellStonePrefab = ObjectDB.instance.GetItemPrefab("Torch");
-                var instantiatedPrefab = Instantiate(spellStonePrefab);
-                instantiatedPrefab.name = "SpellStone";
-                var itemDrop = instantiatedPrefab.GetComponent<ItemDrop>();
-                itemDrop.m_itemData.m_shared.m_name = "SpellStone";
-                itemDrop.m_itemData.m_shared.m_description = "A magical stone imbued with arcane power.";
-                itemDrop.m_itemData.m_shared.m_maxStackSize = 1;
-                itemDrop.m_itemData.m_shared.m_weight = 1f;
-                itemDrop.m_itemData.m_shared.m_value = 100;
-                itemDrop.m_itemData.m_shared.m_icons = new[] { SpriteAccessor.SpellStone };
-                itemDrop.m_itemData.m_shared.m_itemType = ItemDrop.ItemData.ItemType.Trinket;
-                itemDrop.m_itemData.m_shared.m_damages = new HitData.DamageTypes();
-                itemDrop.m_itemData.m_shared.m_damagesPerLevel = new HitData.DamageTypes();
-               
-                ObjectDB.instance.m_items.Add(instantiatedPrefab);
-                VojenLogger.LogInfo($"Added prefab to ObjectDB: {instantiatedPrefab.name}");
-                VojenLogger.LogInfo($"SpellStone prefab exists: {ObjectDB.instance.GetItemPrefab("SpellStone") != null}");
-                VojenLogger.LogInfo("Lets Configure the SpellStone.");
-                var recipe = ScriptableObject.CreateInstance<Recipe>();
-                recipe.name = "Recipe_SpellStone";
-                recipe.m_item = instantiatedPrefab.GetComponent<ItemDrop>(); 
-                recipe.m_amount = 1; // Amount of the item crafted per recipe
-                
-                recipe.m_resources = new[]
-                {
-                    new Piece.Requirement
-                    {
-                        m_resItem = ObjectDB.instance.GetItemPrefab("Wood")?.GetComponent<ItemDrop>(), // Example: requires Wood
-                        m_amount = 5 
-                    },
-                    new Piece.Requirement
-                    {
-                        m_resItem = ObjectDB.instance.GetItemPrefab("Stone")?.GetComponent<ItemDrop>(), // Example: requires Stone
-                        m_amount = 2 
-                    }
-                };
-                
-                ObjectDB.instance.m_recipes.Add(recipe);
+                AddSpellStone();
+                AddRecipes();
                 VojenLogger.LogInfo("Added the SpellStone.");
-                
-                
                 Configs.Setup();
                 Keys.Write();
                 SetupEPI();
@@ -105,7 +72,74 @@ namespace Plugin
             }
         } 
         
-        public void SetupEPI()
+        private void AddConsoleCommands()
+        {
+            Jotunn.Managers.CommandManager.Instance.AddConsoleCommand(new ConsoleCommands.PrintItemsCommand());
+            Jotunn.Managers.CommandManager.Instance.AddConsoleCommand(new ConsoleCommands.TpCommand());
+            Jotunn.Managers.CommandManager.Instance.AddConsoleCommand(new ConsoleCommands.ListPlayersCommand());
+            Jotunn.Managers.CommandManager.Instance.AddConsoleCommand(new ConsoleCommands.BetterSpawnCommand());
+        }
+        
+        private void AddRecipes()
+        {
+        }
+
+        // Custom status effect
+        private CustomStatusEffect SpellStoneEffect;
+        private ButtonConfig SpellStoneSpecialButton;
+        private SpellStone SpellStone;
+        
+        private void AddSpellStone()
+        {
+            try
+            {
+                // Check if the base prefab exists
+                GameObject basePrefab = ObjectDB.instance.GetItemPrefab("Torch");
+                if (basePrefab == null)
+                {
+                    VojenLogger.LogError("Base prefab 'Torch' not found in ObjectDB.");
+                    return;
+                }
+
+                // Check if the sprite is loaded
+                if (SpriteAccessor.SpellStone == null)
+                {
+                    VojenLogger.LogError("SpriteAccessor.SpellStone is null. Ensure the sprite is loaded correctly.");
+                    return;
+                }
+
+
+                // Create and add a custom item based on Torch
+                ItemConfig spellStone = new ItemConfig
+                {
+                    Name = "SpellStone",
+                    Description = "Use This to Cast Spells",
+                    Icon = SpriteAccessor.SpellStone,
+                    CraftingStation = "piece_workbench",
+                    MinStationLevel = 1
+                };
+                spellStone.AddRequirement(new RequirementConfig("Stone", 1));
+
+                CustomItem customItem = new CustomItem("SpellStone", "Flint", spellStone);
+                ItemManager.Instance.AddItem(customItem);
+
+                // Add custom status effect
+                customItem.ItemDrop.m_itemData.m_shared.m_equipStatusEffect = SpellStoneEffect?.StatusEffect;
+                new SpellStone(customItem.ItemDrop.m_itemData);
+                new SpellStoneSetup(customItem,5, 0);
+
+                // Unsubscribe from the event to avoid duplicate calls
+                PrefabManager.OnVanillaPrefabsAvailable -= AddSpellStone;
+
+                VojenLogger.LogInfo("SpellStone added successfully.");
+            }
+            catch (Exception ex)
+            {
+                VojenLogger.LogError($"Error in AddSpellStone: {ex.Message}\n{ex.StackTrace}");
+            }
+        }
+        
+        private void SetupEPI()
         {
             VojenLogger.LogInfo("Initializing EPI");
             if (!AzuExtendedPlayerInventory.API.IsLoaded()) return;
@@ -117,16 +151,18 @@ namespace Plugin
                 AzuExtendedPlayerInventory.API.RemoveSlot(spellStoneLabel);
                 if (addSpellStoneConfig.Value is Toggle.On)
                 {
-                    AzuExtendedPlayerInventory.API.AddSlot(spellStoneLabel, player => player.GetEquippedSpellStone(),
-                        item =>
-                        {
-                            if (item is not Plugin.SpellStone) return false;
-                            return !(Player.m_localPlayer?.HasSpellStone() ?? false);
-                        });
+                    AzuExtendedPlayerInventory.API.AddSlot(
+                        spellStoneLabel,
+                        player => player.GetInventory().GetAllItems().FirstOrDefault(i => i != null && i.m_dropPrefab
+                            && i.m_shared.m_name == "SpellStone"),
+                        item => item?.m_shared?.m_name == "SpellStone" && !(Player.m_localPlayer?.HasSpellStone() ?? false)
+                    );
                 }
             }
            
         }
+        
+        
         private async Task WaitForObjectDB()
         {
             while (ObjectDB.instance == null || ObjectDB.instance.m_items.Count == 0)
@@ -134,11 +170,6 @@ namespace Plugin
                 await Task.Yield();
             }
 
-            while (Player.m_localPlayer == null)
-            {
-                await Task.Yield();
-            }
-            
             VojenLogger.LogInfo("ObjectDB.instance is initialized.");
         }
 
